@@ -77,7 +77,7 @@ export default function App() {
         title={isServer ? 'Server' : 'Client'}
         onPress={() => setIsServer(!isServer)}
       />
-      <Button title="Enviar Mensaje" onPress={sendMessage} disabled={isServer} />
+      <Button title="Send Message" onPress={sendMessage} disabled={isServer} />
       <TextInput
         onChangeText={setIpServer}
         value={ipServer}
