@@ -23,26 +23,25 @@ export default function App() {
 
       server.on('message', (data, rinfo) => {
         setMensaje(data.toString())
-        server.send('¡Hola desde el servidor!', undefined, undefined, rinfo?.port, rinfo?.address, (error) => {
+        server.send('Hello from the server ', undefined, undefined, rinfo?.port, rinfo?.address, (error) => {
           if (error) {
-            console.log('Error al enviar el mensaje:', error);
+            console.log('Error sending the message:', error);
           } else {
-            console.log('Mensaje enviado correctamente');
+            console.log('Response sent');
           }
         });
-        console.log('Mensaje recibido:', data.toString());
       });
 
       server.on('listening', () => {
-        console.log('Servidor escuchando en el puerto:', server.address().port);
-        setConnectionStatus(`Servidor escuchando en el puerto ${server.address().port}`);
+        console.log('Server listening on port:', server.address().port);
+        setConnectionStatus(`Server open on port ${server.address().port}`);
       });
 
       server.bind(8888);
 
       setSocket(server);
     } else {
-      setConnectionStatus(`Servidor desconectado`);
+      setConnectionStatus(`Server disconnected`);
       // Configura la aplicación como cliente
       const client = UdpSocket.createSocket('udp4');
       client.bind(8887);
@@ -59,11 +58,11 @@ export default function App() {
 
     const client = socket;
 
-    client.send('¡Hola desde el cliente!', undefined, undefined, 8888, ipServer, (error) => {
+    client.send('Hello from the client', undefined, undefined, 8888, ipServer, (error) => {
       if (error) {
-        console.log('Error al enviar el mensaje:', error);
+        console.log('An error occured while sending the message :', error);
       } else {
-        console.log('Mensaje enviado correctamente');
+        console.log('Message sent');
       }
     });
     client.on('message', async (message, remoteInfo) => {
@@ -82,9 +81,16 @@ export default function App() {
       <TextInput
         onChangeText={setIpServer}
         value={ipServer}
+        style={{
+          color:'#767676',
+          fontSize:7,
+          fontWeight:'bold'
+        }}
+        placeholderTextColor={"#767676"}
+        placeholder='Enter Server ip'
       />
-      <Text>Dirección IP: {ipAddress}</Text>
-      <Text>Mensaje recibído: {mensaje}</Text>
+      <Text>Client IP: {ipAddress}</Text>
+      <Text>Message received: {mensaje}</Text>
     </View>
   );
 }
