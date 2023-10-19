@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput } from 'react-native';
+import { View, Text, Button, TextInput , Dimensions } from 'react-native';
 import UdpSocket from 'react-native-udp';
 import { NetworkInfo } from 'react-native-network-info';
 export default function App() {
@@ -8,7 +8,8 @@ export default function App() {
   const [socket, setSocket] = useState('');
   const [ipAddress, setIpAddress] = useState('');
   const [mensaje, setMensaje] = useState('');
-  const [ipServer, setIpServer] = React.useState('IP Server');
+  const [ipServer, setIpServer] = React.useState('');
+  const [text, setText] = React.useState('');
   useEffect(() => {
     const fetchIpAddress = async () => {
       const ip = await NetworkInfo.getIPV4Address();
@@ -56,17 +57,20 @@ export default function App() {
   const sendMessage = () => {
     if (isServer) return;
 
+    if(!text) setText('Hello from the client');
+
     const client = socket;
 
-    client.send('Hello from the client', undefined, undefined, 8888, ipServer, (error) => {
+    client.send(text , undefined, undefined, 8888, ipServer, (error) => {
       if (error) {
         console.log('An error occured while sending the message :', error);
       } else {
         console.log('Message sent');
+        setText('')
       }
     });
     client.on('message', async (message, remoteInfo) => {
-        setMensaje(message.toString())
+        setMensaje(message.toString());
       });
   };
 
@@ -77,7 +81,24 @@ export default function App() {
         title={isServer ? 'Server' : 'Client'}
         onPress={() => setIsServer(!isServer)}
       />
-      <Button title="Send Message" onPress={sendMessage} disabled={isServer} />
+      <View
+      style={{
+        width,
+      }}
+      >
+      <TextInput
+        onChangeText={setText}
+        value={text}
+        style={{
+          color:'#767676',
+          fontSize:7,
+          fontWeight:'bold'
+        }}
+        placeholderTextColor={"#767676"}
+        placeholder='Enter Message to send'
+      />
+        <Button title="Send Message" onPress={sendMessage} disabled={isServer} />
+      </View>
       <TextInput
         onChangeText={setIpServer}
         value={ipServer}
