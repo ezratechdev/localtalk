@@ -10,6 +10,7 @@ export default function App() {
   const [mensaje, setMensaje] = useState('');
   const [ipServer, setIpServer] = React.useState('');
   const [text, setText] = React.useState('');
+  const { width } = Dimensions.get("window");
   useEffect(() => {
     const fetchIpAddress = async () => {
       const ip = await NetworkInfo.getIPV4Address();
@@ -54,6 +55,12 @@ export default function App() {
     };
   }, [isServer]);
 
+
+  function sendTextFunc(text){ 
+    if(!text) return setText(`Hello from the client`)
+  setText(text)
+};
+
   const sendMessage = () => {
     if (isServer) return;
 
@@ -87,7 +94,7 @@ export default function App() {
       }}
       >
       <TextInput
-        onChangeText={setText}
+        onChangeText={text => sendTextFunc(text)}
         value={text}
         style={{
           color:'#767676',
